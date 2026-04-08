@@ -57,7 +57,7 @@ public class Level0MazeGenerator extends MazeGenerator {
 
 
         //*Actual maze generation
-        while(!cellStack.isEmpty()) {
+        while (!cellStack.isEmpty()) {
             MazeCell randNeighbor = this.checkNeighbors(grid, currentCell.getGridPosY(), currentCell.getGridPosX(), world);
 
             while (randNeighbor != null) {
@@ -71,28 +71,28 @@ public class Level0MazeGenerator extends MazeGenerator {
         }
 
         //*Connect the mazes together
-        for(int i = 0; i < this.cols; i += 2) {
+        for (int i = 0; i < this.cols; i += 2) {
             MazeCell cell = this.grid[i][0];
             if(cell != null) {
                 cell.removeSouthWall();
             }
         }
 
-        for(int i = 0; i < this.cols; i += 2) {
+        for (int i = 0; i < this.cols; i += 2) {
             MazeCell cell = this.grid[this.cols - 1][i];
             if(cell != null) {
                 cell.removeWestWall();
             }
         }
 
-        for(int i = this.cols - 1; i >= 0; i -= 2) {
+        for (int i = this.cols - 1; i >= 0; i -= 2) {
             MazeCell cell = this.grid[i][this.cols - 1];
             if(cell != null) {
                 cell.removeNorthWall();
             }
         }
 
-        for(int i = this.cols - 1; i >= 0; i -= 2) {
+        for (int i = this.cols - 1; i >= 0; i -= 2) {
             MazeCell cell = this.grid[0][i];
             if(cell != null) {
                 cell.removeEastWall();

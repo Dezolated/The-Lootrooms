@@ -43,9 +43,6 @@ public final class Level1ChunkGenerator extends BackroomsChunkGenerator {
         this.settings = settings;
     }
 
-
-
-
     public void generate(StructureWorldAccess world, Chunk chunk) {
         int x = chunk.getPos().getStartX();
         int z = chunk.getPos().getStartZ();
@@ -62,7 +59,7 @@ public final class Level1ChunkGenerator extends BackroomsChunkGenerator {
         StructurePlacementData structurePlacementData = new StructurePlacementData();
 
 
-        if((float) chunk.getPos().x == 0 && (float) chunk.getPos().z  == 0){
+        if ((float) chunk.getPos().x == 0 && (float) chunk.getPos().z  == 0) {
             roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level1/stairwell_1");
             structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
             optional = structureTemplateManager.getTemplate(roomIdentifier);
@@ -78,7 +75,7 @@ public final class Level1ChunkGenerator extends BackroomsChunkGenerator {
 
             Level1MazeGenerator level1MazeGenerator = new Level1MazeGenerator(8, 10, 10, x, z, "level1");
             level1MazeGenerator.setup(world, false, false, false);
-        } else if (((float)chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float)chunk.getPos().z) % SPBRevamped.finalMazeSize == 0){
+        } else if (((float)chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float)chunk.getPos().z) % SPBRevamped.finalMazeSize == 0) {
             double noise1 = noiseSampler.sample((x) * 0.002, 0, (z) * 0.002);
             if (server != null) {
 
@@ -104,7 +101,7 @@ public final class Level1ChunkGenerator extends BackroomsChunkGenerator {
                     }
                 }
 
-                if(noise1 > 0){
+                if (noise1 > 0) {
                     roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level1/megaroom1");
                     structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
                     optional = structureTemplateManager.getTemplate(roomIdentifier);
@@ -140,7 +137,7 @@ public final class Level1ChunkGenerator extends BackroomsChunkGenerator {
 
 
                     } else {
-                        if(world.getBlockState(mutable.set(x, 19, z)) != Blocks.RED_WOOL.getDefaultState()) {
+                        if (world.getBlockState(mutable.set(x, 19, z)) != Blocks.RED_WOOL.getDefaultState()) {
                             Level1MazeGenerator level1MazeGenerator = new Level1MazeGenerator(8, 10, 10, x, z, "level1");
                             level1MazeGenerator.setup(world, false, false,true);
                         }
@@ -149,7 +146,7 @@ public final class Level1ChunkGenerator extends BackroomsChunkGenerator {
 
                 } else{
 
-                    if(world.getBlockState(mutable.set(x, 19, z)) != Blocks.RED_WOOL.getDefaultState()) {
+                    if (world.getBlockState(mutable.set(x, 19, z)) != Blocks.RED_WOOL.getDefaultState()) {
                         Level1MazeGenerator level1MazeGenerator = new Level1MazeGenerator(8, 10, 10, x, z, "level1");
                         level1MazeGenerator.setup(world, false, false,true);
                     }
@@ -170,8 +167,5 @@ public final class Level1ChunkGenerator extends BackroomsChunkGenerator {
     protected Codec<? extends ChunkGenerator> getCodec() {
         return CODEC;
     }
-
-
-
 }
 

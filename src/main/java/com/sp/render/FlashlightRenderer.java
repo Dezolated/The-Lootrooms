@@ -78,7 +78,7 @@ public class FlashlightRenderer {
         }
     }
 
-    private void tryToRemoveFlashlight(AbstractClientPlayerEntity player){
+    public void tryToRemoveFlashlight(AbstractClientPlayerEntity player){
         if (flashLightList2.containsKey(player) && flashLightList2.get(player) != null) {
             ArrayList<AreaLight> areaLightList = flashLightList2.get(player);
             for(AreaLight areaLights : areaLightList){
@@ -91,5 +91,4 @@ public class FlashlightRenderer {
     public void clearFlashlights(){
         this.flashLightList2.clear();
     }
-
 }

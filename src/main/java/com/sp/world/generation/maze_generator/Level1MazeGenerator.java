@@ -145,34 +145,34 @@ public class Level1MazeGenerator extends MazeGenerator {
         if(x - 1 >= 0) East = grid[x - 1][y];
 
 
-        if (North != null && !North.isVisited()){
+        if (North != null && !North.isVisited()) {
             neighbors.add(North);
         }
-        if (West != null && !West.isVisited()){
+        if (West != null && !West.isVisited()) {
             neighbors.add(West);
         }
-        if (South != null && !South.isVisited()){
+        if (South != null && !South.isVisited()) {
             neighbors.add(South);
         }
-        if (East != null && !East.isVisited()){
+        if (East != null && !East.isVisited()) {
             neighbors.add(East);
         }
 
-        if (world.getBlockState(mutable.set(currentCell.getWorldXPos(), 19, currentCell.getWorldYPos() + this.size)) == Blocks.LIME_WOOL.getDefaultState()){
+        if (world.getBlockState(mutable.set(currentCell.getWorldXPos(), 19, currentCell.getWorldYPos() + this.size)) == Blocks.LIME_WOOL.getDefaultState()) {
             currentCell.removeNorthWall();
         }
-        if (world.getBlockState(mutable.set(currentCell.getWorldXPos(), 19, currentCell.getWorldYPos() - this.size)) == Blocks.LIME_WOOL.getDefaultState()){
+        if (world.getBlockState(mutable.set(currentCell.getWorldXPos(), 19, currentCell.getWorldYPos() - this.size)) == Blocks.LIME_WOOL.getDefaultState()) {
             currentCell.removeSouthWall();
         }
-        if (world.getBlockState(mutable.set(currentCell.getWorldXPos() + this.size, 19, currentCell.getWorldYPos())) == Blocks.LIME_WOOL.getDefaultState()){
+        if (world.getBlockState(mutable.set(currentCell.getWorldXPos() + this.size, 19, currentCell.getWorldYPos())) == Blocks.LIME_WOOL.getDefaultState()) {
             currentCell.removeWestWall();
         }
         if (world.getBlockState(mutable.set(currentCell.getWorldXPos() - this.size, 19, currentCell.getWorldYPos())) == Blocks.LIME_WOOL.getDefaultState() ||
-                world.getBlockState(mutable.set(currentCell.getWorldXPos() - this.size, 26, currentCell.getWorldYPos())) == Blocks.YELLOW_WOOL.getDefaultState()){
+                world.getBlockState(mutable.set(currentCell.getWorldXPos() - this.size, 26, currentCell.getWorldYPos())) == Blocks.YELLOW_WOOL.getDefaultState()) {
             currentCell.removeEastWall();
         }
 
-        if (!neighbors.isEmpty()){
+        if (!neighbors.isEmpty()) {
             Random random = Random.create();
             int r = random.nextBetween(0, neighbors.size() - 1);
             return neighbors.get(r);
@@ -182,7 +182,7 @@ public class Level1MazeGenerator extends MazeGenerator {
         }
     }
 
-    public void removeWalls(MazeCell currentCell, MazeCell neighbor){
+    public void removeWalls(MazeCell currentCell, MazeCell neighbor) {
         if (currentCell.getGridPosX() - neighbor.getGridPosX() != 0) {
             int x = currentCell.getGridPosX() - neighbor.getGridPosX();
 
@@ -218,7 +218,7 @@ public class Level1MazeGenerator extends MazeGenerator {
 
             Identifier roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level1/pillars");
 
-            if(random.nextBetween(0, 8) == 0){
+            if (random.nextBetween(0, 8) == 0) {
                 roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level1/storage");
             }
 
@@ -231,10 +231,10 @@ public class Level1MazeGenerator extends MazeGenerator {
             int XOffset = x + (randomPosX * this.size);
             int ZOffset = z + (randomPosZ * this.size);
 
-            for(int i = 0; i < 3; i++){
-                for(int j = 0; j < 3; j++){
-                    if(world.getBlockState(mutable.set(XOffset + this.size * i, 20, ZOffset + this.size * j)) != Blocks.AIR.getDefaultState() ||
-                            world.getBlockState(mutable.set(XOffset + this.size * i, 26, ZOffset + this.size * j)) == Blocks.YELLOW_WOOL.getDefaultState()){
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (world.getBlockState(mutable.set(XOffset + this.size * i, 20, ZOffset + this.size * j)) != Blocks.AIR.getDefaultState() ||
+                            world.getBlockState(mutable.set(XOffset + this.size * i, 26, ZOffset + this.size * j)) == Blocks.YELLOW_WOOL.getDefaultState()) {
                         place = false;
                     }
                 }

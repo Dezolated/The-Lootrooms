@@ -31,7 +31,6 @@ import com.sp.util.TickTimer;
 import com.sp.world.levels.BackroomsLevel;
 import com.sp.world.levels.custom.InfiniteGrassBackroomsLevel;
 import com.sp.world.levels.custom.Level2BackroomsLevel;
-import com.sp.world.levels.custom.Level324Backroomslevel;
 import com.sp.world.levels.custom.PoolroomsBackroomsLevel;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import foundry.veil.api.client.render.VeilRenderSystem;
@@ -58,6 +57,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
@@ -75,7 +75,6 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.joml.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Vector;
@@ -210,7 +209,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
             MinecraftClient client = MinecraftClient.getInstance();
             World clientWorld = client.world;
-            if(clientWorld != null) {
+            if (clientWorld != null) {
                 //*Only render the shadow map when in the poolrooms
                 if (clientWorld.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
                     if (stage == Stage.AFTER_SKY) {
@@ -220,7 +219,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                     }
                 }
 
-                if(!cutsceneManager.fall) {
+                if (!cutsceneManager.fall) {
                     if (clientWorld.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
                         if (stage == Stage.AFTER_SKY) {
                             if (camera != null) {
@@ -261,7 +260,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
                         this.grassRenderer.render();
                     }
-                } else if(this.grassRenderer != null) {
+                } else if (this.grassRenderer != null) {
                     this.grassRenderer.close();
                     this.grassRenderer = null;
                 } else if (this.birdRenderer != null) {
@@ -322,7 +321,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                         }
                     }
 
-                    if(!client.player.isSpectator() && !client.player.isCreative()){
+                    if (!client.player.isSpectator() && !client.player.isCreative()) {
                         client.options.debugEnabled = false;
                     }
 
@@ -337,7 +336,7 @@ public class SPBRevampedClient implements ClientModInitializer {
             VeilRenderer renderer = VeilRenderSystem.renderer();
             ShaderPreDefinitions definitions = renderer.getShaderDefinitions();
 
-            if(!shouldRenderCameraEffect()) {
+            if (!shouldRenderCameraEffect()) {
                 if(definitions.getDefinition("WARP") != null) {
                     definitions.remove("WARP");
                 }
@@ -355,7 +354,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                             shaderProgram.setInt("youCantEscape", 0);
                         }
 
-                        if(playerComponent.isBeingCaptured()){
+                        if (playerComponent.isBeingCaptured()) {
                             SkinwalkerJumpscare.doJumpscare(shaderProgram, client, playerComponent);
                         } else {
                             shaderProgram.setInt("Jumpscare", 0);
@@ -364,7 +363,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                             shaderProgram.setVector("Rand", 0, 0);
                         }
 
-                        if(PreviousUniforms.prevModelViewMat != null && PreviousUniforms.prevProjMat != null){
+                        if (PreviousUniforms.prevModelViewMat != null && PreviousUniforms.prevProjMat != null) {
                             shaderProgram.setMatrix("prevViewMat", PreviousUniforms.prevModelViewMat);
                             shaderProgram.setMatrix("prevProjMat", PreviousUniforms.prevProjMat);
                             shaderProgram.setVector("prevCameraPos", PreviousUniforms.prevCameraPos);
@@ -375,7 +374,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                     }
 
                     shaderProgram = context.getShader(SSAO);
-                    if(shaderProgram != null){
+                    if (shaderProgram != null) {
                         shaderProgram.setVectors("samples", SSAOSamples.getSSAOSamples());
                     }
 
@@ -440,7 +439,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                 });
 
                 BackroomsLevels.definitions.forEach((s, registryKey) -> {
-                    if(client.world.getRegistryKey() == registryKey) {
+                    if (client.world.getRegistryKey() == registryKey) {
                         definitions.define(s);
                     } else {
                         definitions.remove(s);
@@ -455,7 +454,7 @@ public class SPBRevampedClient implements ClientModInitializer {
             VeilDeferredRenderer renderer = VeilRenderSystem.renderer().getDeferredRenderer();
             renderer.reset();
 
-            if(client.world != null){
+            if (client.world != null) {
                 HelpfulHintManager.sendMessages(client.player);
 
                 //*Just in case it become unsynced
@@ -471,10 +470,11 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         //*For some reason veil lights aren't removed when you leave the game
         ClientConnectionEvents.DISCONNECT.register(client -> {
-            PlayerEntity player = client.player;
+            ClientPlayerEntity player = client.player;
             if (player != null) {
                 PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
                 playerComponent.setFlashLightOn(false);
+                flashlightRenderer.tryToRemoveFlashlight(player);
                 flashlightRenderer.clearFlashlights();
                 playerComponent.setDoingCutscene(false);
             }
@@ -486,7 +486,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                 this.grassRenderer = null;
             }
 
-            if(this.birdRenderer != null) {
+            if (this.birdRenderer != null) {
                 this.birdRenderer.close();
                 this.birdRenderer = null;
             }
@@ -494,12 +494,12 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
             cutsceneManager.reset();
-            if(this.grassRenderer != null) {
+            if (this.grassRenderer != null) {
                 this.grassRenderer.close();
                 this.grassRenderer = null;
             }
 
-            if(this.birdRenderer != null) {
+            if (this.birdRenderer != null) {
                 this.birdRenderer.close();
                 this.birdRenderer = null;
             }
@@ -508,7 +508,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         ClientTickEvents.END_WORLD_TICK.register((client) ->{
             Vector<TickTimer> tickTimers = TickTimer.getAllInstances();
-            if(!tickTimers.isEmpty()){
+            if (!tickTimers.isEmpty()){
                 for(TickTimer timer : tickTimers){
                     timer.addCurrentTick();
                 }
@@ -517,7 +517,7 @@ public class SPBRevampedClient implements ClientModInitializer {
             //Fixes Minecraft spectating not loading chunks bug
             MinecraftClient client1 = MinecraftClient.getInstance();
             PlayerEntity player = client1.player;
-            if(player != null) {
+            if (player != null) {
                 if (player != client1.getCameraEntity() && client1.getCameraEntity() != null) {
                     Vec3d pos = client1.getCameraEntity().getPos();
                     player.setPosition(pos);
@@ -526,22 +526,22 @@ public class SPBRevampedClient implements ClientModInitializer {
         });
 
         ClientTickEvents.END_CLIENT_TICK.register((client) ->{
-            if(cutsceneManager.isPlaying) {
-                if(!ClientManager.getPlayerStateManager().isMuted()) {
+            if (cutsceneManager.isPlaying) {
+                if (!ClientManager.getPlayerStateManager().isMuted()) {
                     shouldBeUnmuted = true;
                     ClientManager.getPlayerStateManager().setMuted(true);
                 }
-            } else if(shouldBeUnmuted) {
+            } else if (shouldBeUnmuted) {
                 ClientManager.getPlayerStateManager().setMuted(false);
                 shouldBeUnmuted = false;
             }
 
             PlayerEntity playerClient = client.player;
-            if(playerClient != null){
+            if (playerClient != null){
                 //*Main Set in Backrooms
                 setInBackrooms(BackroomsLevels.isInBackrooms(playerClient.getWorld().getRegistryKey()));
 
-                if(client.world != null) {
+                if (client.world != null) {
                     VeilRenderer renderer = VeilRenderSystem.renderer();
                     VeilDeferredRenderer deferredRenderer = renderer.getDeferredRenderer();
                     LightRenderer lightRenderer = deferredRenderer.getLightRenderer();
