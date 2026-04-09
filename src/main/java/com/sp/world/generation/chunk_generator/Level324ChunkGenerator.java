@@ -121,7 +121,6 @@ public class Level324ChunkGenerator extends BackroomsChunkGenerator {
                     chunk.setBlockState(mutable.set(i, 63, j), ModBlocks.CONCRETE_BLOCK_11.getDefaultState(), false);
 
                     if ((i + Math.abs(x * 16)) % 1000 < 8/* || (j + Math.abs(chunk.getPos().z * 16)) % 1000 < 8*/) {
-
                         chunk.setBlockState(mutable.set(i, 64, j), ModBlocks.ROAD.getDefaultState(), false);
                     } else {
                         chunk.setBlockState(mutable.set(i, 64, j), ModBlocks.RED_DIRT.getDefaultState(), false);

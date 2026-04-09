@@ -170,7 +170,6 @@
       "spb-revamped:swim/swim7"
     ]
   },
-
   "poolrooms_ambience_noon": {
     "sounds": [
       "spb-revamped:poolrooms/poolrooms_ambience_noon"
@@ -397,6 +396,11 @@
   "walker_footstep": {
     "sounds": [
       "spb-revamped:walker/footstep/walker-step"
+    ]
+  },
+  "walker_screech": {
+    "sounds": [
+      "spb-revamped:walker/walker-start-screech"
     ]
   }
 }

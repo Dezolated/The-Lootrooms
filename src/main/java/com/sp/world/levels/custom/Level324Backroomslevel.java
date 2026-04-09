@@ -6,6 +6,7 @@ import com.sp.cca_stuff.PlayerComponent;
 import com.sp.init.BackroomsLevels;
 import com.sp.init.ModBlocks;
 import com.sp.world.events.generic.lights.LightLevelFlicker;
+import com.sp.world.events.level324.ScreechSoundEvent;
 import com.sp.world.generation.chunk_generator.Level324ChunkGenerator;
 import com.sp.world.levels.BackroomsLevel;
 import com.sp.world.levels.BackroomsLevelWithLights;
@@ -26,6 +27,7 @@ public class Level324Backroomslevel extends BackroomsLevel implements BackroomsL
         super("level324", Level324ChunkGenerator.CODEC, new Vec3d(52,65,21), BackroomsLevels.LEVEL324_WORLD_KEY);
 
         this.registerEvent("flicker", LightLevelFlicker::new);
+        this.registerEvent("ambience", ScreechSoundEvent::new);
 
         this.registerTransition((world, playerComponent, from) -> {
             List<LevelTransition> playerList = new ArrayList<>();
@@ -169,9 +171,8 @@ public class Level324Backroomslevel extends BackroomsLevel implements BackroomsL
         return false;
     }
 
-    @Override
     public int nextEventDelay() {
-        return 0;
+        return random.nextInt(1000, 1200);
     }
 
     @Override
