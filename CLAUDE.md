@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A Fabric mod for **Minecraft 1.20.1 / Java 17** — "SP-Backrooms Revamped" (originally a Backrooms / "Found Footage" horror mod, now being repurposed into a **co-op PvE extraction looter**). See `docs/superpowers/specs/2026-06-28-lootrooms-extraction-base-design.md` for the new direction. **Phase 1** (branch `phase1-stripdown`) stripped the mod to a clean base: all custom enemies, the IK system, the skinwalker mechanic, Level 324, and the horror-event scheduler have been removed. Note the discrepancy: the repo directory is `The-Lootrooms`, but the mod id is `spb-revamped`, the Maven group is `com.sp`, and all packages live under `com.sp`. Current version is in `gradle.properties` (`mod_version`).
+A Fabric mod for **Minecraft 1.20.1 / Java 17** — "SP-Backrooms Revamped" (originally a Backrooms / "Found Footage" horror mod, now being repurposed into a **co-op PvE extraction looter**). See `docs/superpowers/specs/2026-06-28-lootrooms-extraction-base-design.md` for the new direction. **Phase 1** (branch `phase1-stripdown`) stripped the mod to a clean base: all custom enemies, the IK system, the skinwalker mechanic, Level 324, and the horror-specific events (intercom/music) have been removed (the generic event scheduler and light/ambience events remain). Note the discrepancy: the repo directory is `The-Lootrooms`, but the mod id is `spb-revamped`, the Maven group is `com.sp`, and all packages live under `com.sp`. Current version is in `gradle.properties` (`mod_version`).
 
 ## Commands
 
@@ -47,7 +47,7 @@ The mod's "Backrooms levels" are custom dimensions. The central abstraction is t
 - Each level is a **singleton subclass** under `world/levels/custom/` (e.g. `Level0BackroomsLevel`, `PoolroomsBackroomsLevel`). **Level 324 was fully removed in Phase 1** (class, dimension JSON, structures, and sound files deleted).
 - Every level is instantiated and registered in `com.sp.init.BackroomsLevels` (`init()` adds it to `BACKROOMS_LEVELS` and calls `register()`, which registers its `ChunkGenerator` codec).
 - A level binds together: a `levelId`, a `ChunkGenerator` codec, a spawn position, and a `RegistryKey<World>`. The dimension itself is **data-driven JSON** in `data/spb-revamped/dimension/` and `dimension_type/`.
-- A level controls: lighting behavior (`hasVanillaLighting`), sky/cloud rendering, whether the flashlight is allowed, NBT save/load (`writeToNbt`/`readFromNbt`), registered **events** (random ambient horror occurrences) and **transitions** (criteria-based teleports to other levels), plus `transitionIn`/`transitionOut` hooks.
+- A level controls: lighting behavior (`hasVanillaLighting`), sky/cloud rendering, whether the flashlight is allowed, NBT save/load (`writeToNbt`/`readFromNbt`), registered **events** (random ambient occurrences — e.g. light blackout/flicker, ambience) and **transitions** (criteria-based teleports to other levels), plus `transitionIn`/`transitionOut` hooks. (The event *framework* is intact; Phase 1 removed only the horror-specific events — intercom, music, and the Smiler-spawning blackout.)
 - `BackroomsLevelWithLights` extends this with a `LightState` system (ON/OFF/FLICKER) used by light blocks and events.
 - `WorldRepresentingBackroomsLevel` / `vanilla_representing/OverworldRepresentingBackroomsLevel` represent non-backrooms vanilla worlds so the same APIs work everywhere; `BackroomsLevels.isInBackrooms(...)` excludes these.
 
@@ -60,7 +60,7 @@ Lookups go through static helpers on `BackroomsLevels` (`getLevel(World)`, `getB
 
 ### State & sync (CCA components, `cca_stuff/`)
 - `PlayerComponent` (per-player, `ALWAYS_COPY` across respawn) — flashlight state, cutscene flags, render/static flags, teleport state, etc. Skinwalker capture/release fields were removed in Phase 1.
-- `WorldEvents` (per-world, **server-ticking**) — the per-dimension heartbeat. The random-event scheduler (`tickWorldEvents`) and skinwalker state machine were removed in Phase 1; it now handles per-level NBT save + client sync only (delegates `readFromNbt`/`writeToNbt`/`shouldSync` to the current `BackroomsLevel`).
+- `WorldEvents` (per-world, **server-ticking**) — the per-dimension heartbeat. It still runs the random-event scheduler (`tickWorldEvents`) and per-level NBT save + client sync (delegates `readFromNbt`/`writeToNbt`/`shouldSync` to the current `BackroomsLevel`). The skinwalker capture/release state machine was removed in Phase 1.
 - `SkinWalkerComponent`, `SmilerComponent` (per-entity) — **removed in Phase 1** along with the entities themselves.
 
 Components auto-sync via CCA; one-shot client effects go through packets instead.
