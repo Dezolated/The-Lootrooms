@@ -11,16 +11,10 @@ import com.sp.block.entity.ThinFluorescentLightBlockEntity;
 import com.sp.block.entity.TinyFluorescentLightBlockEntity;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.compat.modmenu.ConfigStuff;
-import com.sp.entity.client.SkinWalkerCapturedFlavorText;
-import com.sp.entity.custom.SkinWalkerEntity;
-import com.sp.entity.custom.SmilerEntity;
-import com.sp.entity.ik.parts.sever_limbs.ServerLimb;
 import com.sp.init.BackroomsLevels;
 import com.sp.init.HelpfulHintManager;
 import com.sp.init.ModSounds;
-import com.sp.networking.InitializePackets;
 import com.sp.sounds.*;
-import com.sp.sounds.entity.SkinWalkerChaseSoundInstance;
 import com.sp.sounds.entity.SmilerAmbienceSoundInstance;
 import com.sp.sounds.entity.SmilerGlitchSoundInstance;
 import com.sp.sounds.pipes.GasPipeSoundInstance;
@@ -33,17 +27,12 @@ import com.sp.world.levels.custom.PoolroomsBackroomsLevel;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.deferred.light.AreaLight;
 import foundry.veil.api.client.render.deferred.light.PointLight;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -65,20 +54,6 @@ import static com.sp.block.custom.ThinFluorescentLightBlock.FACING;
  * This mostly happens with Sound Instances. And Veil lights.
  **/
 public class ClientWrapper {
-    public static void skinWalkerPlayStepSound(ServerLimb limb) {
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            MinecraftClient client = MinecraftClient.getInstance();
-            client.getSoundManager().play(new PositionedSoundInstance(ModSounds.SKINWALKER_FOOTSTEP, SoundCategory.HOSTILE, 10.0f, 1.0f, limb.random, limb.pos.x, limb.pos.y, limb.pos.z));
-        }
-    }
-
-    public static void walkerPlayStepSound(ServerLimb limb) {
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            MinecraftClient client = MinecraftClient.getInstance();
-            client.getSoundManager().play(new PositionedSoundInstance(ModSounds.WALKER_FOOTSTEP, SoundCategory.HOSTILE, 10.0f, 1.0f, limb.random, limb.pos.x, limb.pos.y, limb.pos.z));
-        }
-    }
-
     public static void tickClientPlayerComponent(PlayerComponent playerComponent) {
         MinecraftClient client = MinecraftClient.getInstance();
 
@@ -88,25 +63,7 @@ public class ClientWrapper {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            //Get a list of all the smilers in the area and see if any of them can see you
-            List<SmilerEntity> smilerEntityList = playerComponent.player.getWorld().getEntitiesByClass(SmilerEntity.class, playerComponent.player.getBoundingBox().expand(15, 1, 15), livingEntity -> true);
-            boolean isSeen = false;
-            if (!smilerEntityList.isEmpty()) {
-                for (SmilerEntity smiler : smilerEntityList) {
-                    if (smiler.canSee(playerComponent.player)) {
-                        playerComponent.setShouldGlitch(true);
-                        isSeen = true;
-                        break;
-                    }
-                }
-
-            }
-
-            if (!isSeen) {
-                playerComponent.setShouldGlitch(false);
-            }
-
-            //Update smiler glitch effect
+            //Update glitch effect
             if (playerComponent.shouldGlitch()) {
                 playerComponent.glitchTick = Math.min(playerComponent.glitchTick + 1, 80);
                 playerComponent.glitchTimer = Math.min((float) playerComponent.glitchTick / 80, 1.0f);
@@ -157,30 +114,6 @@ public class ClientWrapper {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            //Sync Target Entity for updating SkinWalker suspicion
-            if (playerComponent.getTargetEntity() != client.targetedEntity) {
-                playerComponent.setTargetEntity(client.targetedEntity);
-
-                PacketByteBuf buffer = PacketByteBufs.create();
-                if (playerComponent.getTargetEntity() != null) {
-                    buffer.writeInt(playerComponent.getTargetEntity().getId());
-                } else {
-                    buffer.writeInt(-1);
-                }
-                ClientPlayNetworking.send(InitializePackets.TARGET_ENTITY_SYNC, buffer);
-            }
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            //Flavor text while being controlled by the SkinWalker
-            if (playerComponent.hasBeenCaptured() && !playerComponent.isBeingCaptured()) {
-                SkinWalkerCapturedFlavorText.tickFlavorText(playerComponent.player);
-            }
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
             //Client side stuff for level 0 -> 1 and 1 -> 2 and so on.
 
             Optional<BackroomsLevel> backroomsLevel = BackroomsLevels.getLevel(playerComponent.player.getWorld());
@@ -199,7 +132,7 @@ public class ClientWrapper {
 
                 //Flashlight
 
-                if (ModKeyBinds.toggleFlashlight.wasPressed() && !SPBRevampedClient.getCutsceneManager().isPlaying && !SPBRevampedClient.getCutsceneManager().blackScreen.isBlackScreen && !playerComponent.hasBeenCaptured && !playerComponent.isBeingCaptured()) {
+                if (ModKeyBinds.toggleFlashlight.wasPressed() && !SPBRevampedClient.getCutsceneManager().isPlaying && !SPBRevampedClient.getCutsceneManager().blackScreen.isBlackScreen) {
                     playerComponent.player.playSound(ModSounds.FLASHLIGHT_CLICK, 0.5f, 1);
                     if (level.allowsTorch().value()) {
                         playerComponent.setFlashLightOn(!playerComponent.isFlashLightOn());
@@ -211,12 +144,6 @@ public class ClientWrapper {
                     } else {
                         playerComponent.setFlashLightOn(false);
                         playerComponent.player.sendMessage(level.allowsTorch().string(), true);
-                    }
-                } else if (playerComponent.hasBeenCaptured && playerComponent.isBeingCaptured()) {
-                    if (playerComponent.isFlashLightOn()) {
-                        playerComponent.setFlashLightOn(false);
-
-                        SPBRevampedClient.sendComponentSyncPacket(playerComponent.isFlashLightOn(), "flashlight");
                     }
                 }
 
@@ -316,20 +243,6 @@ public class ClientWrapper {
                 }
             }
 
-        }
-    }
-
-    public static void onRemoveSkinWalkerClientSide(SkinWalkerEntity entity) {
-        if (entity.chaseSoundInstance != null && entity.getWorld().isClient) {
-            MinecraftClient.getInstance().getSoundManager().stop(entity.chaseSoundInstance);
-        }
-    }
-
-    public static void handleSkinWalkerEntityClientSide(SkinWalkerEntity entity) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (!client.getSoundManager().isPlaying(entity.chaseSoundInstance)) {
-            entity.chaseSoundInstance = new SkinWalkerChaseSoundInstance(entity);
-            client.getSoundManager().play(entity.chaseSoundInstance);
         }
     }
 

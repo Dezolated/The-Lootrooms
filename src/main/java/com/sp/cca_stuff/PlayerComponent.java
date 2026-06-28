@@ -2,10 +2,8 @@ package com.sp.cca_stuff;
 
 import com.sp.SPBRevamped;
 import com.sp.clientWrapper.ClientWrapper;
-import com.sp.entity.custom.SmilerEntity;
 import com.sp.init.*;
 import com.sp.mixininterfaces.ServerPlayNetworkSprint;
-import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
 import com.sp.world.levels.BackroomsLevel;
 import com.sp.world.levels.custom.Level2BackroomsLevel;
 import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
@@ -14,7 +12,6 @@ import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.minecraft.client.sound.MovingSoundInstance;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,15 +27,12 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.GameMode;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import static com.sp.SPBRevamped.SLOW_SPEED_MODIFIER;
 
@@ -48,9 +42,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     private final SimpleInventory playerSavedMainInventory = new SimpleInventory(36);
     private final SimpleInventory playerSavedArmorInventory = new SimpleInventory(4);
     private final SimpleInventory playerSavedOffhandInventory = new SimpleInventory(1);
-    private final Random random = new Random();
-
-    private int smilerSpawnDelay = 80;
 
     private int stamina;
     private boolean tired;
@@ -68,21 +59,14 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public int suffocationTimer;
     private boolean shouldDoStatic;
 
-    private boolean isBeingCaptured;
-    public boolean hasBeenCaptured;
-    private boolean isBeingReleased;
-    private Entity targetEntity;
-    private int skinWalkerLookDelay;
     private boolean shouldBeMuted;
     private boolean isSpeaking;
     private int speakingBuffer;
-    private float prevSpeakingTime;
     private boolean visibleToEntity;
     private int visibilityTimer;
     private int visibilityTimerCooldown;
     private boolean talkingTooLoud;
     private int talkingTooLoudTimer;
-    private GameMode prevGameMode;
 
     public MovingSoundInstance DeepAmbience;
     public MovingSoundInstance GasPipeAmbience;
@@ -95,7 +79,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public MovingSoundInstance WindAmbience;
     public MovingSoundInstance WindTunnelAmbience;
 
-    private boolean canSeeActiveSkinWalker;
     private boolean prevFlashLightOn;
 
     public float glitchTimer;
@@ -117,14 +100,9 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
         this.isDoingCutscene = false;
 
-        this.isBeingCaptured = false;
-        this.hasBeenCaptured = false;
-        this.isBeingReleased = false;
-        this.skinWalkerLookDelay = 60;
         this.shouldBeMuted = false;
         this.isSpeaking = false;
         this.speakingBuffer = 80;
-        this.prevSpeakingTime = 0;
         this.visibleToEntity = false;
         this.visibilityTimer = 15;
         this.visibilityTimerCooldown = 0;
@@ -133,8 +111,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.talkingTooLoudTimer = 20;
 
         this.suffocationTimer = 0;
-
-        this.canSeeActiveSkinWalker = false;
 
         this.glitchTimer = 0.0f;
         this.shouldGlitch = false;
@@ -263,34 +239,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.shouldDoStatic = shouldDoStatic;
     }
 
-    public boolean isBeingCaptured() {return isBeingCaptured;}
-    public void setBeingCaptured(boolean beingCaptured) {isBeingCaptured = beingCaptured;}
-
-    public boolean hasBeenCaptured() {return hasBeenCaptured;}
-    public void setHasBeenCaptured(boolean hasBeenCaptured) {this.hasBeenCaptured = hasBeenCaptured;}
-
-    public boolean isBeingReleased() {
-        return isBeingReleased;
-    }
-    public void setBeingReleased(boolean beingReleased) {
-        isBeingReleased = beingReleased;
-    }
-
-    public Entity getTargetEntity() {return targetEntity;}
-    public void setTargetEntity(Entity targetEntity) {
-        this.targetEntity = targetEntity;
-    }
-
-    public int getSkinWalkerLookDelay() {
-        return skinWalkerLookDelay;
-    }
-    public void setSkinWalkerLookDelay(int skinWalkerLookDelay) {
-        this.skinWalkerLookDelay = skinWalkerLookDelay;
-    }
-    public void subtractSkinWalkerLookDelay() {
-        this.skinWalkerLookDelay -= 1;
-    }
-
     public boolean shouldBeMuted() {return shouldBeMuted;}
     public void setShouldBeMuted(boolean shouldStayUnmuted) {this.shouldBeMuted = shouldStayUnmuted;}
 
@@ -314,16 +262,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public void resetTalkingTooLoudTimer(){
         this.talkingTooLoudTimer = 20;
     }
-
-    public GameMode getPrevGameMode() {
-        return prevGameMode;
-    }
-    public void setPrevGameMode(GameMode prevGameMode) {
-        this.prevGameMode = prevGameMode;
-    }
-
-    public boolean canSeeActiveSkinWalkerTarget() {return canSeeActiveSkinWalker;}
-    public void setCanSeeActiveSkinWalkerTarget(boolean canSeeActiveSkinWalker) {this.canSeeActiveSkinWalker = canSeeActiveSkinWalker;}
 
     public float getGlitchTimer() {
         return glitchTimer;
@@ -349,9 +287,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.playingGlitchSound = tag.getBoolean("playingGlitchSound");
         this.shouldNoClip = tag.getBoolean("shouldNoClip");
         this.shouldDoStatic = tag.getBoolean("shouldDoStatic");
-        this.isBeingCaptured = tag.getBoolean("isBeingCaptured");
-        this.hasBeenCaptured = tag.getBoolean("hasBeenCaptured");
-        this.isBeingReleased = tag.getBoolean("isBeingReleased");
         this.shouldBeMuted = tag.getBoolean("shouldBeMuted");
         this.shouldGlitch = tag.getBoolean("shouldGlitch");
         this.shouldInflictGlitchDamage = tag.getBoolean("shouldInflictGlitchDamage");
@@ -371,9 +306,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         tag.putBoolean("playingGlitchSound", this.playingGlitchSound);
         tag.putBoolean("shouldNoClip", this.shouldNoClip);
         tag.putBoolean("shouldDoStatic", this.shouldDoStatic);
-        tag.putBoolean("isBeingCaptured", this.isBeingCaptured);
-        tag.putBoolean("hasBeenCaptured", this.hasBeenCaptured);
-        tag.putBoolean("isBeingReleased", this.isBeingReleased);
         tag.putBoolean("shouldBeMuted", this.shouldBeMuted);
         tag.putBoolean("shouldGlitch", this.shouldGlitch);
         tag.putBoolean("shouldInflictGlitchDamage", this.shouldInflictGlitchDamage);
@@ -405,19 +337,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         //*Damage if glitched enough from smilers
         if(this.shouldInflictGlitchDamage){
             this.player.damage(ModDamageTypes.of(this.player.getWorld(), ModDamageTypes.SMILER), 1.0f);
-        }
-
-        //*Is speaking
-        if(BackroomsVoicechatPlugin.speakingTime.containsKey(this.player.getUuid()) && BackroomsVoicechatPlugin.speakingTime.get(this.player.getUuid()) == this.prevSpeakingTime) {
-            if(this.isSpeaking()) {
-                this.speakingBuffer--;
-                if (this.speakingBuffer <= 0) {
-                    this.setSpeaking(false);
-                    this.speakingBuffer = 80;
-                }
-            }
-        } else {
-            this.speakingBuffer = 80;
         }
 
         //*Cast him to the Backrooms
@@ -474,28 +393,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         //*Update Entity Visibility
         updateEntityVisibility();
 
-        if(BackroomsVoicechatPlugin.speakingTime.containsKey(this.player.getUuid())) {
-            this.prevSpeakingTime = BackroomsVoicechatPlugin.speakingTime.get(this.player.getUuid());
-        }
-        
         shouldSync();
-    }
-
-    private void summonSmilers() {
-        if (this.smilerSpawnDelay < 0) {
-            SmilerEntity smiler = ModEntities.SMILER_ENTITY.create(this.player.getWorld());
-
-            BlockPos.Mutable mutable = new BlockPos.Mutable();
-            float randomAngle = random.nextFloat() * 360.0f;
-            Vec3d spawnPos = new Vec3d(0, 0, 15).rotateY(randomAngle).add(player.getPos());
-            if (!this.player.getWorld().getBlockState(mutable.set(spawnPos.x, spawnPos.y, spawnPos.z)).blocksMovement()) {
-                smiler.refreshPositionAndAngles(Math.floor(spawnPos.x) + 0.5f, spawnPos.y, Math.floor(spawnPos.z) + 0.5f, 0.0f, 0.0f);
-                this.player.getWorld().spawnEntity(smiler);
-                smilerSpawnDelay = 80;
-            }
-        }
-
-        smilerSpawnDelay--;
     }
 
     private void updateStamina() {

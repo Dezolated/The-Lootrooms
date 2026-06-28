@@ -18,7 +18,6 @@ public class SyncServerComponent {
             PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
 
             switch (component) {
-                case "beingCaptured": playerComponent.setBeingCaptured(readBoolean); break;
                 case "cutscene": playerComponent.setDoingCutscene(readBoolean); break;
                 case "flashlight": playerComponent.setFlashLightOn(readBoolean); break;
                 case "glitch": playerComponent.setShouldInflictGlitchDamage(readBoolean); break;

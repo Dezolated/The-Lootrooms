@@ -1,10 +1,10 @@
 package com.sp.render.bird;
 
 import com.sp.compat.modmenu.ConfigStuff;
-import com.sp.entity.ik.util.MathUtil;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -38,11 +38,19 @@ public class FlockManager {
         }
 
         if (shouldLerp) {
-            FLOCK_CENTERS.set(flockIndex, MathUtil.lerpVec3(10, FLOCK_CENTERS.get(flockIndex), target));
+            FLOCK_CENTERS.set(flockIndex, lerpVec3(10, FLOCK_CENTERS.get(flockIndex), target));
         } else {
             FLOCK_CENTERS.set(flockIndex, target);
         }
 
+    }
+
+    private static Vec3d lerpVec3(int step, Vec3d oldPos, Vec3d newPos) {
+        double d = 1.0 / (double) step;
+        double newX = MathHelper.lerp(d, oldPos.x, newPos.x);
+        double newY = MathHelper.lerp(d, oldPos.y, newPos.y);
+        double newZ = MathHelper.lerp(d, oldPos.z, newPos.z);
+        return new Vec3d(newX, newY, newZ);
     }
 
     public static Vec3d getFlockCenter(int flockIndex) {

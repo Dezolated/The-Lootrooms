@@ -3,7 +3,6 @@
   "package": "com.sp.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "BodyControlMixin",
     "ChunkStatusMixin",
     "EntityMixin",
     "LevelPropertiesMixin",
@@ -20,7 +19,6 @@
     "rain.LightningSkyLightingUpLightningEntity",
     "rain.ServerWorldNoHorseTrapMixin",
     "respawnsystem.PlayerManagerMixin",
-    "skinstolen.ServerPlayerEntityMixin",
     "soundphysicsremasteredcompat.AllowedSoundsConfigMixin",
     "soundphysicsremasteredcompat.SFRReflectivityMixin",
     "soundphysicsremasteredcompat.SoundTypesMixin",
@@ -32,7 +30,6 @@
   "client": [
     "AOFixMixin",
     "CameraMixin",
-    "DinoDebugRendererMixin",
     "DisableF3Mixin",
     "DisableJumpMixin",
     "EntityRenderDispatcherMixin",
@@ -40,7 +37,6 @@
     "GameOptionsMixin",
     "GameRendererMixin",
     "ItemEntityRendererMixin",
-    "LivingEntityRendererMixin",
     "MinecraftClientMixin",
     "PlayerEntityRendererMixin",
     "PlayerInventoryMixin",
@@ -76,9 +72,6 @@
     "renderlayer.RenderLayerMixin",
     "renderlayer.WorldRendererMixin",
     "respawnsystem.DeathScreenMixin",
-    "respawnsystem.LivingEntityRendererMixin",
-    "skinstolen.ChatScreenMixin",
-    "skinstolen.GameMenuScreenMixin",
-    "skinstolen.MinecraftClientMixin"
+    "respawnsystem.LivingEntityRendererMixin"
   ]
 }

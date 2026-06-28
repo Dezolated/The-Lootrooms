@@ -5,12 +5,7 @@ import com.sp.cca_stuff.PlayerComponent;
 import com.sp.command.EventCommand;
 import com.sp.command.GimmeMyInventoryBack;
 import com.sp.command.LevelCommand;
-import com.sp.command.SkinwalkerCommand;
 import com.sp.compat.modmenu.ConfigStuff;
-import com.sp.entity.custom.SkinWalkerEntity;
-import com.sp.entity.custom.SmilerEntity;
-import com.sp.entity.ik.model.GeckoLib.MowzieModelFactory;
-import com.sp.entity.ik.util.PrAnCommonClass;
 import com.sp.init.*;
 import com.sp.item.ModItemGroups;
 import com.sp.mixininterfaces.NewServerProperties;
@@ -21,8 +16,6 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.Registries;
@@ -34,7 +27,6 @@ import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.bernie.geckolib.GeckoLib;
-import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.UUID;
 
@@ -48,12 +40,6 @@ public class SPBRevamped implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            PrAnCommonClass.isDev = true;
-            PrAnCommonClass.shouldRenderDebugLegs = true;
-            PrAnCommonClass.LOGGER.info("Started in a development environment. Debug renderers will be activated by default.");
-        }
-
 		BackroomsLevels.init();
 
 		ModItems.registerModItems();
@@ -68,16 +54,8 @@ public class SPBRevamped implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register(EventCommand::register);
 		CommandRegistrationCallback.EVENT.register(LevelCommand::register);
 		CommandRegistrationCallback.EVENT.register(GimmeMyInventoryBack::register);
-		CommandRegistrationCallback.EVENT.register(SkinwalkerCommand::register);
 
-		// Thanks Bob Mowzie
-		GeckoLibUtil.addCustomBakedModelFactory(MOD_ID, new MowzieModelFactory());
 		GeckoLib.initialize();
-
-		PrAnCommonClass.init();
-
-		FabricDefaultAttributeRegistry.register(ModEntities.SKIN_WALKER_ENTITY, SkinWalkerEntity.createSkinWalkerAttributes());
-		FabricDefaultAttributeRegistry.register(ModEntities.SMILER_ENTITY, SmilerEntity.createSmilerAttributes());
 
 		LOGGER.info("\"WOOOOOOOOOOOOOOOOOOOOOOOooooooooooooooooooooooooo..........\" -He said as he fell into the backrooms, never to be seen again.");
 

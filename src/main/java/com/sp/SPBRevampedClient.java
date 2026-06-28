@@ -5,13 +5,8 @@ import com.sp.block.client.renderer.ThinFluorescentLightBlockEntityRenderer;
 import com.sp.block.client.renderer.TinyFluorescentLightBlockEntityRenderer;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
-import com.sp.cca_stuff.WorldEvents;
 import com.sp.compat.modmenu.ConfigDefinitions;
 import com.sp.compat.modmenu.ConfigStuff;
-import com.sp.entity.client.model.SmilerModel;
-import com.sp.entity.client.renderer.SkinWalkerRenderer;
-import com.sp.entity.client.renderer.SmilerRenderer;
-import com.sp.entity.client.renderer.WalkerRenderer;
 import com.sp.init.*;
 import com.sp.networking.InitializePackets;
 import com.sp.networking.callbacks.ClientConnectionEvents;
@@ -50,8 +45,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -62,14 +55,12 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.toast.SystemToast;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
@@ -150,12 +141,6 @@ public class SPBRevampedClient implements ClientModInitializer {
         BlockEntityRendererFactories.register(ModBlockEntities.FLUORESCENT_LIGHT_BLOCK_ENTITY, FluorescentLightBlockEntityRenderer::new);
         BlockEntityRendererFactories.register(ModBlockEntities.THIN_FLUORESCENT_LIGHT_BLOCK_ENTITY, ThinFluorescentLightBlockEntityRenderer::new);
         BlockEntityRendererFactories.register(ModBlockEntities.TINY_FLUORESCENT_LIGHT_BLOCK_ENTITY, TinyFluorescentLightBlockEntityRenderer::new);
-
-        EntityRendererRegistry.register(ModEntities.SKIN_WALKER_ENTITY, SkinWalkerRenderer::new);
-        EntityRendererRegistry.register(ModEntities.WALKER_ENTITY, WalkerRenderer::new);
-        EntityRendererRegistry.register(ModEntities.SMILER_ENTITY, SmilerRenderer::new);
-
-        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.SMILER, SmilerModel::getTexturedModelData);
 
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
             @Override
@@ -283,36 +268,6 @@ public class SPBRevampedClient implements ClientModInitializer {
 
 
                 if (client.player != null) {
-                    if (clientWorld != null) {
-                        PlayerComponent playerComponent = InitializeComponents.PLAYER.get(client.player);
-                        WorldEvents events = InitializeComponents.EVENTS.get(clientWorld);
-                        Entity activeSkinwalker = events.getActiveSkinwalkerTarget();
-
-
-                        if (activeSkinwalker != null) {
-                            Box box = activeSkinwalker.getVisibilityBoundingBox().expand(0.1);
-                            boolean inFrustum = frustum.isVisible(box);
-
-                            if (inFrustum && client.player.canSee(activeSkinwalker)) {
-                                if (!playerComponent.canSeeActiveSkinWalkerTarget()) {
-                                    playerComponent.setCanSeeActiveSkinWalkerTarget(true);
-
-                                    PacketByteBuf buffer = PacketByteBufs.create();
-                                    buffer.writeBoolean(true);
-                                    ClientPlayNetworking.send(InitializePackets.SEE_SKINWALKER_SYNC, buffer);
-                                }
-                            } else {
-                                if (playerComponent.canSeeActiveSkinWalkerTarget()) {
-                                    playerComponent.setCanSeeActiveSkinWalkerTarget(false);
-
-                                    PacketByteBuf buffer = PacketByteBufs.create();
-                                    buffer.writeBoolean(false);
-                                    ClientPlayNetworking.send(InitializePackets.SEE_SKINWALKER_SYNC, buffer);
-                                }
-                            }
-                        }
-                    }
-
                     if (!client.player.isSpectator() && !client.player.isCreative()) {
                         client.options.debugEnabled = false;
                     }
@@ -346,14 +301,10 @@ public class SPBRevampedClient implements ClientModInitializer {
                             shaderProgram.setInt("youCantEscape", 0);
                         }
 
-                        if (playerComponent.isBeingCaptured()) {
-                            SkinwalkerJumpscare.doJumpscare(shaderProgram, client, playerComponent);
-                        } else {
-                            shaderProgram.setInt("Jumpscare", 0);
-                            shaderProgram.setInt("CreepyFace1", 0);
-                            shaderProgram.setInt("CreepyFace2", 0);
-                            shaderProgram.setVector("Rand", 0, 0);
-                        }
+                        shaderProgram.setInt("Jumpscare", 0);
+                        shaderProgram.setInt("CreepyFace1", 0);
+                        shaderProgram.setInt("CreepyFace2", 0);
+                        shaderProgram.setVector("Rand", 0, 0);
 
                         if (PreviousUniforms.prevModelViewMat != null && PreviousUniforms.prevProjMat != null) {
                             shaderProgram.setMatrix("prevViewMat", PreviousUniforms.prevModelViewMat);
@@ -379,7 +330,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                         }
 
 
-                        if(blackScreen || (player.isInsideWall() && !getCutsceneManager().isPlaying) || playerComponent.isBeingReleased()) {
+                        if(blackScreen || (player.isInsideWall() && !getCutsceneManager().isPlaying)) {
                             shaderProgram.setInt("blackScreen", 1);
                         } else {
                             shaderProgram.setInt("blackScreen", 0);
