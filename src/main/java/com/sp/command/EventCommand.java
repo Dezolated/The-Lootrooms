@@ -11,10 +11,7 @@ import com.sp.world.events.AbstractEvent;
 import com.sp.world.events.infinite_grass.InfiniteGrassAmbience;
 import com.sp.world.events.generic.lights.LightLevelBlackout;
 import com.sp.world.events.generic.lights.LightLevelFlicker;
-import com.sp.world.events.level0.Level0IntercomBasic;
-import com.sp.world.events.level0.Level0Music;
 import com.sp.world.events.level1.Level1Ambience;
-import com.sp.world.events.level1.Level1Blackout;
 import com.sp.world.events.level2.Level2Warp;
 import com.sp.world.events.poolrooms.PoolroomsAmbience;
 import com.sp.world.events.poolrooms.PoolroomsSunset;
@@ -26,7 +23,6 @@ import net.minecraft.world.World;
 
 public class EventCommand {
     private static final SimpleCommandExceptionType FLICKER_BLACKOUT_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Event only occurs in Level 0 and Level 1"));
-    private static final SimpleCommandExceptionType ONLY_LEVEL0_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Event only occurs in Level 0"));
     private static final SimpleCommandExceptionType AMBIENCE_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Event only occurs in Level 1, Level 2, The Poolrooms, or the Infinite Field"));
     private static final SimpleCommandExceptionType WARP_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Event only occurs in Level 2"));
     private static final SimpleCommandExceptionType SUNSET_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Event only occurs in The Poolrooms"));
@@ -43,18 +39,6 @@ public class EventCommand {
                         )
                         .then(CommandManager.literal("blackout")
                                 .executes(context -> doBlackout(
-                                                context.getSource()
-                                        )
-                                )
-                        )
-                        .then(CommandManager.literal("intercom")
-                                .executes(context -> doIntercom(
-                                                context.getSource()
-                                        )
-                                )
-                        )
-                        .then(CommandManager.literal("music")
-                                .executes(context -> doMusic(
                                                 context.getSource()
                                         )
                                 )
@@ -111,41 +95,13 @@ public class EventCommand {
 
             return 1;
         } else if (registryKey == BackroomsLevels.LEVEL1_WORLD_KEY) {
-            Level1Blackout blackout = new Level1Blackout();
+            LightLevelBlackout blackout = new LightLevelBlackout();
             setEvent(events, world, blackout);
 
             return 1;
         }
 
         throw FLICKER_BLACKOUT_EXCEPTION.create();
-    }
-
-    private static int doIntercom(ServerCommandSource source) throws CommandSyntaxException {
-        World world = source.getWorld();
-        RegistryKey<World> registryKey = world.getRegistryKey();
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
-
-        if (registryKey == BackroomsLevels.LEVEL0_WORLD_KEY) {
-            Level0IntercomBasic intercom = new Level0IntercomBasic();
-            setEvent(events, world, intercom);
-            return 1;
-        }
-
-        throw ONLY_LEVEL0_EXCEPTION.create();
-    }
-
-    private static int doMusic(ServerCommandSource source) throws CommandSyntaxException {
-        World world = source.getWorld();
-        RegistryKey<World> registryKey = world.getRegistryKey();
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
-
-        if (registryKey == BackroomsLevels.LEVEL0_WORLD_KEY) {
-            Level0Music music = new Level0Music();
-            setEvent(events, world, music);
-            return 1;
-        }
-
-        throw ONLY_LEVEL0_EXCEPTION.create();
     }
 
     private static int doAmbience(ServerCommandSource source) throws CommandSyntaxException {

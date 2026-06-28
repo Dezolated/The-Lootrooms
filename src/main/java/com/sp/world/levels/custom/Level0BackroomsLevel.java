@@ -7,8 +7,6 @@ import com.sp.init.BackroomsLevels;
 import com.sp.world.events.AbstractEvent;
 import com.sp.world.events.generic.lights.LightLevelBlackout;
 import com.sp.world.events.generic.lights.LightLevelFlicker;
-import com.sp.world.events.level0.Level0IntercomBasic;
-import com.sp.world.events.level0.Level0Music;
 import com.sp.world.generation.chunk_generator.Level0ChunkGenerator;
 import com.sp.world.levels.BackroomsLevel;
 import com.sp.world.levels.BackroomsLevelWithLights;
@@ -48,8 +46,6 @@ public class Level0BackroomsLevel extends BackroomsLevel implements BackroomsLev
         super.register();
         this.registerEvent("blackout", LightLevelBlackout::new);
         this.registerEvent("flicker", LightLevelFlicker::new);
-        this.registerEvent("intercom", Level0IntercomBasic::new);
-        this.registerEvent("music", Level0Music::new);
 
         this.registerTransition((world, playerComponent, from) -> {
             List<LevelTransition> playerList = new ArrayList<>();

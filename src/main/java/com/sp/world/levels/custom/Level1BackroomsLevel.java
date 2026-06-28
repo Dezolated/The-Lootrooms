@@ -6,7 +6,6 @@ import com.sp.cca_stuff.PlayerComponent;
 import com.sp.init.BackroomsLevels;
 import com.sp.world.events.generic.lights.LightLevelFlicker;
 import com.sp.world.events.level1.Level1Ambience;
-import com.sp.world.events.level1.Level1Blackout;
 import com.sp.world.generation.chunk_generator.Level1ChunkGenerator;
 import com.sp.world.levels.BackroomsLevel;
 import com.sp.world.levels.BackroomsLevelWithLights;
@@ -30,7 +29,6 @@ public class Level1BackroomsLevel extends BackroomsLevel implements BackroomsLev
     public void register() {
         super.register();
 
-        this.registerEvent("blackout", Level1Blackout::new);
         this.registerEvent("flicker", LightLevelFlicker::new);
         this.registerEvent("ambience", Level1Ambience::new);
 
