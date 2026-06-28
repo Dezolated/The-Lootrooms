@@ -38,7 +38,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.sound.PositionedSoundInstance;
@@ -48,7 +47,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.joml.AxisAngle4f;
@@ -126,7 +124,7 @@ public class ClientWrapper {
                     }
                 }
 
-            } else if (!playerComponent.isTeleportingToPoolrooms() && (!(SPBRevampedClient.isInLevel(BackroomsLevels.LEVEL324_BACKROOMS_LEVEL) && playerComponent.player.getWorld().getBlockState(playerComponent.player.getBlockPos().offset(Direction.DOWN, 2)).isOf(Blocks.GREEN_WOOL)))) {
+            } else if (!playerComponent.isTeleportingToPoolrooms()) {
                 playerComponent.glitchTick = Math.max(playerComponent.glitchTick - 1, 0);
                 playerComponent.glitchTimer = Math.max((float) playerComponent.glitchTick / 80, 0.0f);
 
@@ -144,24 +142,6 @@ public class ClientWrapper {
                     }
                 }
             }
-
-            if (SPBRevampedClient.isInLevel(BackroomsLevels.LEVEL324_BACKROOMS_LEVEL) && playerComponent.player.getWorld().getBlockState(playerComponent.player.getBlockPos().offset(Direction.DOWN, 2)).isOf(Blocks.GREEN_WOOL)) {
-                playerComponent.glitchTick = Math.min(playerComponent.glitchTick + 4, 120);
-                playerComponent.glitchTimer = (float) playerComponent.glitchTick / 30;
-
-                if (!soundManager.isPlaying(playerComponent.GlitchAmbience)) {
-                    playerComponent.GlitchAmbience = new SmilerGlitchSoundInstance(playerComponent.player);
-                    soundManager.play(playerComponent.GlitchAmbience);
-                }
-
-
-                if (playerComponent.glitchTimer >= 3) {
-                    if (SPBRevampedClient.isInLevel(BackroomsLevels.LEVEL324_BACKROOMS_LEVEL) && playerComponent.player.getWorld().getBlockState(playerComponent.player.getBlockPos().offset(Direction.DOWN, 3)).isOf(Blocks.RED_WOOL)) {
-                        playerComponent.player.teleport(playerComponent.player.getX(), playerComponent.player.getY() - 65, playerComponent.player.getZ());
-                    }
-                }
-            }
-
 
             //Teleporting to poolrooms Glitch
             if (playerComponent.isTeleportingToPoolrooms()) {
@@ -322,22 +302,6 @@ public class ClientWrapper {
             if ((levelKey == BackroomsLevels.INFINITE_FIELD_WORLD_KEY) && !soundManager.isPlaying(playerComponent.WindAmbience)) {
                 playerComponent.WindAmbience = new InfiniteGrassAmbienceSoundInstance(playerComponent.player);
                 soundManager.play(playerComponent.WindAmbience);
-            }
-
-            if ((levelKey == BackroomsLevels.LEVEL324_WORLD_KEY) && !soundManager.isPlaying(playerComponent.WindAmbience) && playerComponent.player.getY() > 20) {
-                playerComponent.WindAmbience = new InfiniteGrassAmbienceSoundInstance(playerComponent.player);
-                if (soundManager.isPlaying(playerComponent.WindTunnelAmbience)) {
-                    soundManager.stop(playerComponent.WindTunnelAmbience);
-                }
-                soundManager.play(playerComponent.WindAmbience);
-            }
-
-            if ((levelKey == BackroomsLevels.LEVEL324_WORLD_KEY) && !soundManager.isPlaying(playerComponent.WindTunnelAmbience) && playerComponent.player.getY() < 20) {
-                playerComponent.WindTunnelAmbience = new WindTunnelAmbienceSoundInstance(playerComponent.player);
-                if (soundManager.isPlaying(playerComponent.WindAmbience)) {
-                    soundManager.stop(playerComponent.WindAmbience);
-                }
-                soundManager.play(playerComponent.WindTunnelAmbience);
             }
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

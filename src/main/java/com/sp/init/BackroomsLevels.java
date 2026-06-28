@@ -24,7 +24,6 @@ public class BackroomsLevels {
     public static final RegistryKey<World> LEVEL2_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "level2"));
     public static final RegistryKey<World> POOLROOMS_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "poolrooms"));
     public static final RegistryKey<World> INFINITE_FIELD_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "infinite_field"));
-    public static final RegistryKey<World> LEVEL324_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "level324"));
 
     public static final BackroomsLevel LEVEL0_BACKROOMS_LEVEL = new Level0BackroomsLevel();
     public static final BackroomsLevel LEVEL1_BACKROOMS_LEVEL = new Level1BackroomsLevel();
@@ -32,7 +31,6 @@ public class BackroomsLevels {
     public static final BackroomsLevel POOLROOMS_BACKROOMS_LEVEL = new PoolroomsBackroomsLevel();
     public static final BackroomsLevel INFINITE_FIELD_BACKROOMS_LEVEL = new InfiniteGrassBackroomsLevel();
     public static final BackroomsLevel OVERWORLD_REPRESENTING_BACKROOMS_LEVEL = new OverworldRepresentingBackroomsLevel();
-    public static final BackroomsLevel LEVEL324_BACKROOMS_LEVEL = new Level324Backroomslevel();
 
     public static List<BackroomsLevel> BACKROOMS_LEVELS = new ArrayList<>();
 
@@ -43,7 +41,6 @@ public class BackroomsLevels {
         BACKROOMS_LEVELS.add(POOLROOMS_BACKROOMS_LEVEL);
         BACKROOMS_LEVELS.add(INFINITE_FIELD_BACKROOMS_LEVEL);
         BACKROOMS_LEVELS.add(OVERWORLD_REPRESENTING_BACKROOMS_LEVEL);
-        BACKROOMS_LEVELS.add(LEVEL324_BACKROOMS_LEVEL);
 
         for (BackroomsLevel backroomsLevel : BACKROOMS_LEVELS) {
             backroomsLevel.register();
@@ -82,7 +79,6 @@ public class BackroomsLevels {
             "LEVEL0",         LEVEL0_WORLD_KEY,
             "LEVEL1",         LEVEL1_WORLD_KEY,
             "LEVEL2",         LEVEL2_WORLD_KEY,
-            "LEVEL324",       LEVEL324_WORLD_KEY,
             "POOLROOMS",      POOLROOMS_WORLD_KEY,
             "INFINITE_FIELD", INFINITE_FIELD_WORLD_KEY
     );

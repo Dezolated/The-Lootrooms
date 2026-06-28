@@ -8,13 +8,11 @@ import com.sp.mixininterfaces.ServerPlayNetworkSprint;
 import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
 import com.sp.world.levels.BackroomsLevel;
 import com.sp.world.levels.custom.Level2BackroomsLevel;
-import com.sp.world.levels.custom.Level324Backroomslevel;
 import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
@@ -33,7 +31,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.TeleportTarget;
@@ -249,7 +246,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
     public boolean isTeleportingToPoolrooms() {
         BackroomsLevel level = BackroomsLevels.getLevel(this.player.getWorld()).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL);
-        return (level instanceof Level2BackroomsLevel || level instanceof Level324Backroomslevel) && this.teleportingTimer > 0;
+        return (level instanceof Level2BackroomsLevel) && this.teleportingTimer > 0;
     }
 
     public boolean shouldNoClip() {
@@ -437,13 +434,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 currentTransition = teleports.get(0);
             }
 
-            if (level == BackroomsLevels.LEVEL324_BACKROOMS_LEVEL && this.player.getWorld().getBlockState(this.player.getBlockPos().offset(Direction.DOWN, 3)).isOf(Blocks.RED_WOOL)) {
-                this.player.teleport(this.player.getX(), this.player.getY() - 64, this.player.getZ());
-            }
-
-            if (level == BackroomsLevels.LEVEL324_BACKROOMS_LEVEL && this.player.getWorld().getBlockState(this.player.getBlockPos().offset(Direction.DOWN, 3)).isOf(Blocks.YELLOW_WOOL)) {
-                this.player.teleport(this.player.getX(), this.player.getY() + 64, this.player.getZ());
-            }
         }
 
         // ������ Why is the � a question mark for me?
@@ -479,10 +469,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 currentTransition.callback().tick(currentTransition.teleport(), teleportingTimer);
             }
             this.setTeleportingTimer(teleportingTimer - 1);
-        }
-
-        if (BackroomsLevels.isInBackroomsLevel(player.getWorld(), BackroomsLevels.LEVEL324_BACKROOMS_LEVEL) && player.getPos().subtract(0, 64, 0).lengthSquared() > 10000 && player.getPos().y > 60) {
-            summonSmilers();
         }
 
         //*Update Entity Visibility

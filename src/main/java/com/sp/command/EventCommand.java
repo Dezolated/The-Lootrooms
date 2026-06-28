@@ -95,12 +95,6 @@ public class EventCommand {
 
 
             return 1;
-        } else if (registryKey == BackroomsLevels.LEVEL324_WORLD_KEY) {
-            LightLevelFlicker flicker = new LightLevelFlicker();
-            setEvent(events, world, flicker);
-
-
-            return 1;
         }
 
         throw FLICKER_BLACKOUT_EXCEPTION.create();

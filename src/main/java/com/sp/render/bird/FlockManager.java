@@ -64,13 +64,6 @@ public class FlockManager {
         int maxY = 60;
         int minY = 50;
 
-        /*
-        if (SPBRevampedClient.isInLevel(BackroomsLevels.LEVEL324_BACKROOMS_LEVEL)) {
-            maxY = 90;
-            minY = maxY - 10;
-        }
-         */
-
         boolean shouldLerp = true;
         Random random = new Random();
         for (int i = 0; i < FLOCK_CENTERS.size(); i++) {
@@ -102,12 +95,6 @@ public class FlockManager {
             }
 
             velocity = velocity.normalize();
-
-            /*
-            if (SPBRevampedClient.isInLevel(BackroomsLevels.LEVEL324_BACKROOMS_LEVEL)) {
-                velocity = velocity.multiply(2);
-            }
-             */
 
             FLOCK_VELOCITIES.set(i, velocity);
 

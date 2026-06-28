@@ -3,9 +3,7 @@ package com.sp.render.grass;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.SPBRevamped;
-import com.sp.SPBRevampedClient;
 import com.sp.compat.modmenu.ConfigStuff;
-import com.sp.init.BackroomsLevels;
 import com.sp.mixininterfaces.RenderIndirectExtension;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.VeilRenderer;
@@ -48,10 +46,6 @@ public class GrassRenderer {
     private ByteBuffer cmd;
 
     private float getGrassHeight() {
-        if (SPBRevampedClient.isInLevel(BackroomsLevels.LEVEL324_BACKROOMS_LEVEL)) {
-            return 1.5f;
-        }
-
         return 1f;
     }
 

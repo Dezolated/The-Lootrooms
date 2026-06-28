@@ -252,14 +252,6 @@ public class SPBRevampedClient implements ClientModInitializer {
                             }
                         }
                     }
-                } else if (clientWorld.getRegistryKey() == BackroomsLevels.LEVEL324_WORLD_KEY) {
-                    if (stage == Stage.AFTER_SOLID_BLOCKS) {
-                        if (this.grassRenderer == null) {
-                            this.grassRenderer = new GrassRenderer();
-                        }
-
-                        this.grassRenderer.render();
-                    }
                 } else if (this.grassRenderer != null) {
                     this.grassRenderer.close();
                     this.grassRenderer = null;
@@ -564,7 +556,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                     }
 
                     getCurrentBackroomsLevel().ifPresent((backroomsLevel -> {
-                        if ((backroomsLevel instanceof InfiniteGrassBackroomsLevel/* || backroomsLevel instanceof Level324Backroomslevel*/) && ConfigStuff.birdQuality != BirdQuality.DISABLED) {
+                        if ((backroomsLevel instanceof InfiniteGrassBackroomsLevel) && ConfigStuff.birdQuality != BirdQuality.DISABLED) {
                             FlockManager.tick();
                         }
                     }));
