@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.9-SNAPSHOT'
+	id 'fabric-loom' version '1.17.12'
 	id 'maven-publish'
 }
 
@@ -56,6 +56,11 @@ repositories {
 		url = 'https://maven.maxhenkel.de/repository/public'
 	}
 
+	//owo-lib (declares Jankson as a transitive dep; Modrinth maven POMs do not)
+	maven {
+		url = 'https://maven.wispforest.io'
+	}
+
 
 	maven {
 		name = "Modrinth"
@@ -102,6 +107,11 @@ dependencies {
 	//Midnight Lib
 	modImplementation "maven.modrinth:midnightlib:${project.midnightlib_version}"
 	include "maven.modrinth:midnightlib:${project.midnightlib_version}"
+
+	//owo-lib (declarative UI framework — custom screens/HUD). From wispforest maven so
+	//Jankson resolves transitively in dev; owo JiJs Jankson itself for production.
+	modImplementation "io.wispforest:owo-lib:${project.owo_version}"
+	include "io.wispforest:owo-lib:${project.owo_version}"
 
 	//GeckoLib
 	modImplementation("software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}")
