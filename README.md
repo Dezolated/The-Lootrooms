@@ -17,7 +17,7 @@ The Lootrooms is a **derivative work** of
 Backrooms levels, world generation, and Veil-based rendering — goes to them.
 
 **Modifications by Dezolated, beginning June 2026:** the mod is being
-repurposed from a single-player Backrooms horror experience into a co-op PvE
+repurposed from a Backrooms horror experience into a co-op PvE
 extraction looter. Notably, the custom enemies, the IK system, the skinwalker
 mechanic, Level 324, and the horror-specific events have been removed to
 establish a clean base, and the project is being rebuilt around a run /
