@@ -19,19 +19,16 @@ import eu.midnightdust.lib.config.MidnightConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.world.World;
 import org.slf4j.Logger;
@@ -40,9 +37,6 @@ import software.bernie.geckolib.GeckoLib;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class SPBRevamped implements ModInitializer {
 	public static final String MOD_ID = "spb-revamped";
@@ -90,42 +84,6 @@ public class SPBRevamped implements ModInitializer {
 		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(((player, origin, destination) -> {
 			PacketByteBuf buffer = PacketByteBufs.create();
 			ServerPlayNetworking.send(player, InitializePackets.RELOAD_LIGHTS, buffer);
-		}));
-
-		ServerPlayerEvents.AFTER_RESPAWN.register(((oldPlayer, newPlayer, alive) -> {
-			if(!BackroomsLevels.isInBackrooms(oldPlayer.getWorld().getRegistryKey())) {
-				return;
-			}
-
-			boolean backupInvulnerable;
-			try {
-				ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-				PlayerComponent playerComponent = InitializeComponents.PLAYER.get(newPlayer);
-
-				sendBlackScreenPacket(newPlayer, 120, false, true);
-				backupInvulnerable = newPlayer.getAbilities().invulnerable;
-				newPlayer.getAbilities().invulnerable = true;
-				playerComponent.setShouldRender(false);
-				playerComponent.sync();
-				newPlayer.networkHandler.sendPacket(new PlaySoundS2CPacket(RegistryEntry.of(ModSounds.NO_ESCAPE), SoundCategory.AMBIENT, newPlayer.getPos().getX(), newPlayer.getPos().getY(), newPlayer.getPos().getZ(), 100.0f, 1.0f, newPlayer.getRandom().nextLong()));
-
-				//After YOU CAN'T ESCAPE is over
-				executorService.schedule(() -> {
-					playerComponent.setShouldRender(true);
-					playerComponent.setShouldDoStatic(true);
-					playerComponent.sync();
-					newPlayer.getAbilities().invulnerable = backupInvulnerable;
-					executorService.shutdown();
-				}, 6000, TimeUnit.MILLISECONDS);
-
-				executorService.schedule(() -> {
-					playerComponent.setShouldDoStatic(false);
-					playerComponent.sync();
-					executorService.shutdown();
-				}, 8000, TimeUnit.MILLISECONDS);
-			} catch (Exception e) {
-				LOGGER.error("Error in AFTER_RESPAWN event: {}", String.valueOf(e));
-			}
 		}));
 	}
 
