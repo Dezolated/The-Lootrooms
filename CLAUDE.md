@@ -35,7 +35,7 @@ Versions are pinned in `gradle.properties`; repositories and `include`/`modImple
 ## Architecture
 
 ### Entry points (`fabric.mod.json`)
-- `com.sp.SPBRevamped` (main) — server/common init: registers blocks, items, sounds, entities, packets, commands, gamerules, levels, and server-side world-change / respawn event hooks.
+- `com.sp.SPBRevamped` (main) — server/common init: registers blocks, items, sounds, packets, commands, gamerules, levels, and a server-side world-change hook. (Entity registration and the respawn horror hook were removed in Phase 1.)
 - `com.sp.SPBRevampedClient` (client) — all rendering: registers renderers, key binds, block render layers, and (crucially) hooks into Veil's render-stage and post-processing events to drive the VHS look, shadow maps, grass/bird compute shaders, flashlight, and per-level shader definitions.
 - `com.sp.cca_stuff.InitializeComponents` — registers CCA components.
 - `com.sp.SPBRevampedDataGenerator` — datagen.
