@@ -566,7 +566,7 @@ public class SPBRevampedClient implements ClientModInitializer {
     }
 
     public static boolean shouldRenderCameraEffect() {
-        return (!isInBackrooms() && ConfigStuff.enableVhsEffect) || (isInBackrooms() && ConfigStuff.enableVhsEffectInTheBackrooms);
+        return isInBackrooms() && ConfigStuff.enableVhsEffectInTheBackrooms;
     }
 
     public static void setInBackrooms(boolean inBackrooms) {

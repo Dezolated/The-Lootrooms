@@ -53,10 +53,7 @@ public class ConfigStuff extends MidnightConfig {
 
 
     @Entry(category = SHADERS)
-    public static boolean enableVhsEffect = false;
-
-    @Entry(category = SHADERS)
-    public static boolean enableVhsEffectInTheBackrooms = false;
+    public static boolean enableVhsEffectInTheBackrooms = true;
 
     @Entry(category = SHADERS, isSlider = true, min = 0, max = 1)
     public static float VHSDistortionMultiplier = 1.0f;
