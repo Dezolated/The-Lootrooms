@@ -31,3 +31,6 @@ description="Co-op PvE extraction looter on the backrooms levels."
     versionRange="[4.8.4,)"
     ordering="AFTER"
     side="BOTH"
+
+[[mixins]]
+config="spb_revamped.mixins.json"
