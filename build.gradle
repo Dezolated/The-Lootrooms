@@ -46,9 +46,9 @@ dependencies {
     devMods fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
 }
 tasks.register('copyModsForDev', Copy) {
+    doFirst { delete layout.projectDirectory.dir('run/mods') }
     from { configurations.devMods }
     into layout.projectDirectory.dir('run/mods')
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 tasks.whenTaskAdded { task ->
     if (task.name in ['prepareRunClient', 'prepareRunServer']) {
