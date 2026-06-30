@@ -1,0 +1,33 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="GPL-3.0-only"
+[[mods]]
+modId="spb_revamped"
+version="${version}"
+displayName="SP-Backrooms Revamped"
+authors="SpacePotato, Herr Chaos, MetaOne; Forge port by Dezolated"
+description="Co-op PvE extraction looter on the backrooms levels."
+[[dependencies.spb_revamped]]
+    modId="forge"
+    mandatory=true
+    versionRange="[47,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.spb_revamped]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20.1]"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.spb_revamped]]
+    modId="veil"
+    mandatory=false
+    versionRange="*"
+    ordering="AFTER"
+    side="BOTH"
+[[dependencies.spb_revamped]]
+    modId="geckolib"
+    mandatory=false
+    versionRange="*"
+    ordering="AFTER"
+    side="BOTH"
