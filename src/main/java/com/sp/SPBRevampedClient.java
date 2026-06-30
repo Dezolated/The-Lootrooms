@@ -27,7 +27,6 @@ import com.sp.world.levels.BackroomsLevel;
 import com.sp.world.levels.custom.InfiniteGrassBackroomsLevel;
 import com.sp.world.levels.custom.Level2BackroomsLevel;
 import com.sp.world.levels.custom.PoolroomsBackroomsLevel;
-import de.maxhenkel.voicechat.voice.client.ClientManager;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.VeilRenderer;
 import foundry.veil.api.client.render.deferred.VeilDeferredRenderer;
@@ -94,8 +93,6 @@ public class SPBRevampedClient implements ClientModInitializer {
     public static TickTimer tickTimer = new TickTimer();
     public static boolean blackScreen;
     public static boolean youCantEscape;
-
-    private static boolean shouldBeUnmuted = false;
 
     private static final Random random = Random.create();
     private static final Random random2 = Random.create(34563264);
@@ -469,16 +466,6 @@ public class SPBRevampedClient implements ClientModInitializer {
         });
 
         ClientTickEvents.END_CLIENT_TICK.register((client) ->{
-            if (cutsceneManager.isPlaying) {
-                if (!ClientManager.getPlayerStateManager().isMuted()) {
-                    shouldBeUnmuted = true;
-                    ClientManager.getPlayerStateManager().setMuted(true);
-                }
-            } else if (shouldBeUnmuted) {
-                ClientManager.getPlayerStateManager().setMuted(false);
-                shouldBeUnmuted = false;
-            }
-
             PlayerEntity playerClient = client.player;
             if (playerClient != null){
                 //*Main Set in Backrooms
