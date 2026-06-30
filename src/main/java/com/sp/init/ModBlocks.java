@@ -17,6 +17,8 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.function.Supplier;
 
 public class ModBlocks {
+    // NOTE: master applied Fabric's noBlockBreakParticles() to every block; Forge 1.20.1 has no
+    // BlockBehaviour.Properties equivalent (would need a LevelRenderer mixin) — dropped for now. TODO(later stage).
     public static final DeferredRegister<Block> BLOCKS =
             DeferredRegister.create(ForgeRegistries.BLOCKS, SPBRevamped.NAMESPACE);
 

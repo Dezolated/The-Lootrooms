@@ -58,8 +58,9 @@ public class DrawingMarker extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-        return createTickerHelper(type, ModBlockEntities.DRAWING_MARKER_BLOCK_ENTITY.get(),
-                (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1));
+        // TODO(Stage 3/4): restore ticking when the block-entity logic is implemented:
+        // return createTickerHelper(type, ModBlockEntities.DRAWING_MARKER_BLOCK_ENTITY.get(), (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1));
+        return null;
     }
 
     @Override
