@@ -100,9 +100,11 @@ public class FluorescentLightBlockEntity extends BlockEntity {
                 if (!((BackroomsLevels.getLevel(this.getWorld()).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof BackroomsLevelWithLights level)) {
                     return;
                 }
-                //Turn off if Blackout Event is active
+                //Turn off if Blackout Event is active, and restore once it ends
                 if (level.getLightState() == BackroomsLevelWithLights.LightState.BLACKOUT) {
                     world.setBlockState(pos, world.getBlockState(pos).with(FluorescentLightBlock.BLACKOUT, true));
+                } else if (state.get(FluorescentLightBlock.BLACKOUT)) {
+                    world.setBlockState(pos, world.getBlockState(pos).with(FluorescentLightBlock.BLACKOUT, false));
                 }
 
                 if (level.getLightState() != BackroomsLevelWithLights.LightState.ON && state.get(FluorescentLightBlock.ON)) {
