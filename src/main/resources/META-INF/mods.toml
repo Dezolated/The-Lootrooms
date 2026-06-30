@@ -21,13 +21,13 @@ description="Co-op PvE extraction looter on the backrooms levels."
     side="BOTH"
 [[dependencies.spb_revamped]]
     modId="veil"
-    mandatory=false
-    versionRange="*"
+    mandatory=true
+    versionRange="[1.0.0,)"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.spb_revamped]]
     modId="geckolib"
-    mandatory=false
-    versionRange="*"
+    mandatory=true
+    versionRange="[4.8.4,)"
     ordering="AFTER"
     side="BOTH"
