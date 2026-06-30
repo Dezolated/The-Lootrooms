@@ -1,0 +1,84 @@
+package com.sp.block;
+
+import com.sp.init.ModSounds;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.block.SoundType;
+
+public class SprintBlockSoundGroup extends SoundType {
+    private final SoundEvent sprintSound;
+
+    public static final SprintBlockSoundGroup SILENT = new SprintBlockSoundGroup(
+            0.0f,
+            0.0f,
+            ModSounds.SILENCE.get(),
+            ModSounds.SILENCE.get(),
+            ModSounds.SILENCE.get(),
+            ModSounds.SILENCE.get(),
+            ModSounds.SILENCE.get(),
+            ModSounds.SILENCE.get()
+    );
+
+    public static final SprintBlockSoundGroup CARPET = new SprintBlockSoundGroup(
+            1.0f,
+            1.0f,
+            SoundEvents.WOOL_BREAK,
+            ModSounds.CARPET_WALK.get(),
+            SoundEvents.WOOL_PLACE,
+            ModSounds.SILENCE.get(),
+            ModSounds.CARPET_RUN.get(),
+            ModSounds.CARPET_RUN.get()
+    );
+
+    public static final SprintBlockSoundGroup CONCRETE = new SprintBlockSoundGroup(
+            1.0f,
+            1.0f,
+            SoundEvents.STONE_BREAK,
+            ModSounds.CONCRETE_WALK.get(),
+            SoundEvents.STONE_PLACE,
+            ModSounds.SILENCE.get(),
+            ModSounds.CONCRETE_RUN.get(),
+            ModSounds.CONCRETE_RUN.get()
+    );
+
+    public static final SoundType WALL = new SoundType(
+            1.0f,
+            1.0f,
+            SoundEvents.WOOD_BREAK,
+            SoundEvents.WOOD_STEP,
+            SoundEvents.WOOD_PLACE,
+            ModSounds.SILENCE.get(),
+            SoundEvents.WOOD_FALL
+    );
+
+    public static final SoundType CEILING_TILE = new SoundType(
+            1.0f,
+            1.0f,
+            SoundEvents.WOOD_BREAK,
+            SoundEvents.WOOD_STEP,
+            SoundEvents.WOOD_PLACE,
+            ModSounds.SILENCE.get(),
+            SoundEvents.WOOD_FALL
+    );
+
+    public static final SoundType GRASS2 = new SprintBlockSoundGroup(
+            1.0f,
+            1.0f,
+            SoundEvents.GRASS_BREAK,
+            ModSounds.GRASS_WALK.get(),
+            SoundEvents.GRASS_PLACE,
+            ModSounds.SILENCE.get(),
+            ModSounds.GRASS_RUN.get(),
+            ModSounds.GRASS_RUN.get()
+    );
+
+    public SprintBlockSoundGroup(float volume, float pitch, SoundEvent breakSound, SoundEvent stepSound, SoundEvent placeSound, SoundEvent hitSound, SoundEvent fallSound, SoundEvent sprintSound) {
+        super(volume, pitch, breakSound, stepSound, placeSound, hitSound, fallSound);
+        this.sprintSound = sprintSound;
+    }
+
+    public SoundEvent getSprintingSound(){
+        return this.sprintSound;
+    }
+
+}
