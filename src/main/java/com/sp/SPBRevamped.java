@@ -1,5 +1,6 @@
 package com.sp;
 
+import com.sp.init.ModSounds;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -23,7 +24,8 @@ public class SPBRevamped {
     public SPBRevamped() {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         // DeferredRegister registrations attached here in later tasks:
-        // ModSounds.register(modBus); ModBlocks.register(modBus); ModItems.register(modBus);
+        ModSounds.register(modBus);
+        // ModBlocks.register(modBus); ModItems.register(modBus);
         // ModBlockEntities.register(modBus); ModCreativeTab.register(modBus);
         LOGGER.info("SP-Backrooms Revamped (Forge) initializing");
     }
