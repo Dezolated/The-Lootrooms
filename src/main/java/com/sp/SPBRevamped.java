@@ -8,11 +8,16 @@ import com.mojang.logging.LogUtils;
 
 @Mod(SPBRevamped.MOD_ID)
 public class SPBRevamped {
-    // NOTE: Forge mod IDs must match ^[a-z][a-z0-9_]{1,63}$ — hyphens are forbidden.
-    // The Fabric mod used "spb-revamped"; the Forge port uses "spb_revamped".
-    // All resource paths (data/, assets/) that referenced spb-revamped are unchanged —
-    // they are updated in a follow-up task when resources are ported.
+    // Forge mod IDs must match ^[a-z][a-z0-9_]{1,63}$ — hyphens are forbidden, so the
+    // Fabric mod id "spb-revamped" became "spb_revamped" here. Used ONLY for @Mod,
+    // mods.toml, and the mod event bus.
     public static final String MOD_ID = "spb_revamped";
+
+    // ResourceLocation namespaces DO allow hyphens, so every asset/data path keeps the
+    // original "spb-revamped" namespace — assets copy 1:1 with zero rename. Use this
+    // (NOT MOD_ID) for every DeferredRegister.create(registry, NAMESPACE) and
+    // ResourceLocation(NAMESPACE, ...) in the registration layer (Tasks 6–9).
+    public static final String NAMESPACE = "spb-revamped";
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public SPBRevamped() {
